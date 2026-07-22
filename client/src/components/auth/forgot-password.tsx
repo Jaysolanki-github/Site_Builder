@@ -1,11 +1,6 @@
 "use client"
 
-import {
-  type AuthPlugin,
-  useAuth,
-  useFetchOptions,
-  useRequestPasswordReset
-} from "@better-auth-ui/react"
+import { useAuth, useFetchOptions, useRequestPasswordReset } from "@better-auth-ui/react"
 import { type SyntheticEvent, useState } from "react"
 import { toast } from "sonner"
 
@@ -68,9 +63,8 @@ export function ForgotPassword({ className }: ForgotPasswordProps) {
     })
   }
 
-  const Captcha = plugins.find(
-    (plugin): plugin is AuthPlugin => "captchaComponent" in plugin
-  )?.captchaComponent
+  const Captcha = (plugins.find((plugin) => "captchaComponent" in plugin) as any)
+    ?.captchaComponent
 
   const [fieldErrors, setFieldErrors] = useState<{
     email?: string

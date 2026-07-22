@@ -1,0 +1,11 @@
+services:
+  - type: web_service
+    name: site-builder-backend
+    env: node
+    branch: main
+    region: oregon
+    plan: starter
+    repo: .
+    buildCommand: cd server && npm ci && npm run build
+    startCommand: cd server && node dist/server.js
+    envVars: []

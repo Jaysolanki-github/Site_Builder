@@ -4,12 +4,7 @@ import {
   authMutationKeys,
   parseAdditionalFieldValue
 } from "@better-auth-ui/core"
-import {
-  type AuthPlugin,
-  useAuth,
-  useFetchOptions,
-  useSignUpEmail
-} from "@better-auth-ui/react"
+import { useAuth, useFetchOptions, useSignUpEmail } from "@better-auth-ui/react"
 import { useIsMutating } from "@tanstack/react-query"
 import { Eye, EyeOff } from "lucide-react"
 import { type SyntheticEvent, useState } from "react"
@@ -109,9 +104,8 @@ export function SignUp({
   })
   const isPending = signInMutating + signUpMutating > 0
 
-  const Captcha = plugins.find(
-    (plugin): plugin is AuthPlugin => "captchaComponent" in plugin
-  )?.captchaComponent
+  const Captcha = (plugins.find((plugin) => "captchaComponent" in plugin) as any)
+    ?.captchaComponent
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
@@ -457,14 +451,16 @@ export function SignUp({
                   </Button>
 
                   {plugins
-                    .filter((plugin): plugin is AuthPlugin => "authButtons" in plugin)
+                    .filter((plugin) => "authButtons" in plugin)
                     .flatMap((plugin) =>
-                      (plugin.authButtons ?? []).map((AuthButton, index) => (
-                        <AuthButton
-                          key={`${plugin.id}-${index.toString()}`}
-                          view="signUp"
-                        />
-                      ))
+                      (((plugin as any).authButtons ?? []) as any[]).map(
+                        (AuthButton: any, index: number) => (
+                          <AuthButton
+                            key={`${(plugin as any).id}-${index.toString()}`}
+                            view="signUp"
+                          />
+                        )
+                      )
                     )}
                 </div>
               </FieldGroup>
