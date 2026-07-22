@@ -2,10 +2,10 @@ import express, { Request, Response } from 'express';
 import "dotenv/config";
 import cors from 'cors';
 import { toNodeHandler } from 'better-auth/node';
-import { auth } from './lib/auth';
-import userRouter from './routes/userRoutes';
-import projectRouter from './routes/projectRoutes';
-import { stripeWebHook } from './controllers/stripeWebHooks';
+import { auth } from './lib/auth.js';
+import userRouter from './routes/userRoutes.js';
+import projectRouter from './routes/projectRoutes.js';
+import { stripeWebHook } from './controllers/stripeWebHooks.js';
 
 console.log("KEY LOADED:", process.env.AI_API_KEY);
 
