@@ -6,7 +6,7 @@ import {
   useSignInEmail
 } from "@better-auth-ui/react"
 import { useIsMutating } from "@tanstack/react-query"
-import { type ComponentType, type SyntheticEvent, useState } from "react"
+import { type SyntheticEvent, useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"

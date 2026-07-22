@@ -1,4 +1,5 @@
 import type { AuthView } from "@better-auth-ui/core"
+import type { AuthPlugin } from "@better-auth-ui/react"
 import { useAuth } from "@better-auth-ui/react"
 import { type ComponentType, useEffect } from "react"
 
@@ -33,6 +34,28 @@ const AUTH_VIEWS: Partial<Record<AuthView, ComponentType<AuthProps>>> = {
   forgotPassword: ForgotPassword,
   resetPassword: ResetPassword,
   verifyEmail: VerifyEmail
+}
+
+type PluginWithAuthViews = AuthPlugin & {
+  views: {
+    auth?: Record<string, ComponentType<AuthProps>>
+  }
+}
+
+type PluginWithFallbackSignIn = AuthPlugin & {
+  fallbackViews: {
+    auth?: {
+      signIn: ComponentType<AuthProps>
+    }
+  }
+}
+
+function hasAuthViews(plugin: AuthPlugin): plugin is PluginWithAuthViews {
+  return typeof plugin.views === "object" && plugin.views !== null
+}
+
+function hasFallbackSignIn(plugin: AuthPlugin): plugin is PluginWithFallbackSignIn {
+  return typeof plugin.fallbackViews === "object" && plugin.fallbackViews !== null
 }
 
 /**
@@ -107,7 +130,8 @@ export function Auth({
         ))
     if (!pluginView) continue
 
-    const PluginView = plugin.views?.auth?.[pluginView]
+    if (!hasAuthViews(plugin)) continue
+    const PluginView = plugin.views.auth?.[pluginView]
     if (!PluginView) continue
 
     return (
@@ -123,9 +147,10 @@ export function Auth({
   //    (password auth is off). Used by `magicLinkPlugin` to render the
   //    magic-link form as the primary passwordless sign-in surface.
   if (authView === "signIn" && !emailAndPassword?.enabled) {
-    const Fallback = plugins.find(
-      (plugin) => plugin.fallbackViews?.auth?.signIn
-    )?.fallbackViews?.auth?.signIn
+    const Fallback = plugins
+      .filter((plugin): plugin is PluginWithFallbackSignIn => hasFallbackSignIn(plugin))
+      .find((plugin) => plugin.fallbackViews.auth?.signIn)
+      ?.fallbackViews.auth?.signIn
 
     if (Fallback) {
       return (
