@@ -29,7 +29,8 @@ app.use(cors(corsOptions))
 
 
 
-app.all('/api/auth/{*any}', toNodeHandler(auth));
+// Mount Better Auth under /api/auth — use a wildcard that Express understands
+app.all('/api/auth/*', toNodeHandler(auth));
 
 app.use(express.json({limit : '50mb'}))
 
