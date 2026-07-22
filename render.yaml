@@ -6,6 +6,8 @@ services:
     region: oregon
     plan: starter
     repo: .
-    buildCommand: cd server && npm ci && npm run build
+    buildCommand: cd server && npm ci --include=dev && npm run build
     startCommand: cd server && node dist/server.js
-    envVars: []
+    envVars:
+      - name: NPM_CONFIG_PRODUCTION
+        value: "false"
