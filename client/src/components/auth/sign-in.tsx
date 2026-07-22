@@ -1,7 +1,12 @@
 import { authMutationKeys } from "@better-auth-ui/core"
-import { useAuth, useFetchOptions, useSignInEmail } from "@better-auth-ui/react"
+import {
+  type AuthPlugin,
+  useAuth,
+  useFetchOptions,
+  useSignInEmail
+} from "@better-auth-ui/react"
 import { useIsMutating } from "@tanstack/react-query"
-import { type SyntheticEvent, useState } from "react"
+import { type ComponentType, type SyntheticEvent, useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -83,7 +88,7 @@ export function SignIn({
   const isPending = signInMutating + signUpMutating > 0
 
   const Captcha = plugins.find(
-    (plugin) => plugin.captchaComponent
+    (plugin): plugin is AuthPlugin => "captchaComponent" in plugin
   )?.captchaComponent
 
   const [fieldErrors, setFieldErrors] = useState<{
@@ -251,14 +256,16 @@ export function SignIn({
                     {localization.auth.signIn}
                   </Button>
 
-                  {plugins.flatMap((plugin) =>
-                    (plugin.authButtons ?? []).map((AuthButton, index) => (
-                      <AuthButton
-                        key={`${plugin.id}-${index.toString()}`}
-                        view="signIn"
-                      />
-                    ))
-                  )}
+                  {plugins
+                    .filter((plugin): plugin is AuthPlugin => "authButtons" in plugin)
+                    .flatMap((plugin) =>
+                      (plugin.authButtons ?? []).map((AuthButton, index) => (
+                        <AuthButton
+                          key={`${plugin.id}-${index.toString()}`}
+                          view="signIn"
+                        />
+                      ))
+                    )}
                 </div>
               </FieldGroup>
             </form>

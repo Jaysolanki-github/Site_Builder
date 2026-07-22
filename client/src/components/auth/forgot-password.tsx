@@ -1,6 +1,7 @@
 "use client"
 
 import {
+  type AuthPlugin,
   useAuth,
   useFetchOptions,
   useRequestPasswordReset
@@ -68,7 +69,7 @@ export function ForgotPassword({ className }: ForgotPasswordProps) {
   }
 
   const Captcha = plugins.find(
-    (plugin) => plugin.captchaComponent
+    (plugin): plugin is AuthPlugin => "captchaComponent" in plugin
   )?.captchaComponent
 
   const [fieldErrors, setFieldErrors] = useState<{
