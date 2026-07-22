@@ -201,10 +201,12 @@ export const rollbackToVersion = async (req: Request, res: Response) => {
             return res.status(404).json({message: 'Project not found'});
         }
 
-        const version = project?.versions.find((version)=>version.id===versionId);
-        
-        if(!version){                
-            return res.status(404).json({message: 'Version not found'});
+        const version = project?.versions.find(
+          (version: { id: string; code: string }) => version.id === versionId
+        )
+
+        if (!version) {
+            return res.status(404).json({ message: 'Version not found' });
         }
 
         await prisma.websiteProject.update({
